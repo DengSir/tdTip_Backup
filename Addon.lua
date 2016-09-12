@@ -19,7 +19,6 @@ local HIGHLIGHT_FONT_COLOR = HIGHLIGHT_FONT_COLOR
 
 ---- WOW APIS
 
-UnitFactionGroup
 
 ---- DEFINE
 
@@ -314,7 +313,7 @@ function Addon:GetTargetText()
     else
         unitName = strcolor(UnitName(unit), UnitColor(unit))
     end
-    return unitName and foramt('%s: [[ %s ]]', TARGET, unitName) or nil
+    return unitName and format('%s: [[ %s ]]', TARGET, unitName) or nil
 end
 
 function Addon:SetUnit(unit)
@@ -411,7 +410,7 @@ function Addon:SetUnit(unit)
         if self.unitGuild then
             local unitGuild = self.unitGuild
             if self.db.profile.showGuildRank then
-                unitGuild = foramt('<%s - %s>', self.unitGuild, self.unitGuildRank)
+                unitGuild = format('<%s - %s>', self.unitGuild, self.unitGuildRank)
             else
                 unitGuild = format('<%s>', self.unitGuild)
             end
