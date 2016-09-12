@@ -1,0 +1,7 @@
+## Interface: 70000
+## Title: tdTip
+## Version: 70000.01
+## Author: DengSir
+## SavedVariables: TDDB_TIP
+
+Load.xml
