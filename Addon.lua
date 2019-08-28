@@ -1,20 +1,19 @@
-
 local Addon = LibStub('AceAddon-3.0'):NewAddon('tdTip', 'AceHook-3.0', 'AceEvent-3.0', 'AceTimer-3.0')
-local L     = LibStub('AceLocale-3.0'):GetLocale('tdTip')
+local L = LibStub('AceLocale-3.0'):GetLocale('tdTip')
 
 local tinsert, tconcat = table.insert, table.concat
 
 ---- WOW UI
 
-local UIParent             = UIParent
-local WorldFrame           = WorldFrame
-local GameTooltip          = GameTooltip
+local UIParent = UIParent
+local WorldFrame = WorldFrame
+local GameTooltip = GameTooltip
 local GameTooltipStatusBar = GameTooltipStatusBar
 
-local ICON_LIST            = ICON_LIST
-local PET_TYPE_SUFFIX      = PET_TYPE_SUFFIX
-local RAID_CLASS_COLORS    = RAID_CLASS_COLORS
-local FACTION_BAR_COLORS   = FACTION_BAR_COLORS
+local ICON_LIST = ICON_LIST
+local PET_TYPE_SUFFIX = PET_TYPE_SUFFIX
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local FACTION_BAR_COLORS = FACTION_BAR_COLORS
 local HIGHLIGHT_FONT_COLOR = HIGHLIGHT_FONT_COLOR
 
 ---- WOW APIS
@@ -24,27 +23,32 @@ local UnitIsBattlePetCompanion = UnitIsBattlePetCompanion or nop
 ---- DEFINE
 
 local PVP, LEVEL, TARGET = PVP, LEVEL, TARGET
-local YOU                = format('|cffff0000>> %s <<|r', L.You)
-local DEAD               = format('|cffee2222%s|r', DEAD)
-local PLAYER_FACTION     = UnitFactionGroup('player')
-local CLASSIFICATION     = {
-    elite     = format('|cffffff33%s|r',   ELITE),
-    worldboss = format('|cffff0000%s|r',   BOSS),
-    rare      = format('|cffff66ff%s|r',   L.Rare),
+local YOU = format('|cffff0000>> %s <<|r', L.You)
+local DEAD = format('|cffee2222%s|r', DEAD)
+local PLAYER_FACTION = UnitFactionGroup('player')
+local CLASSIFICATION = {
+    elite = format('|cffffff33%s|r', ELITE),
+    worldboss = format('|cffff0000%s|r', BOSS),
+    rare = format('|cffff66ff%s|r', L.Rare),
     rareelite = format('|cffffaaff%s%s|r', L.Rare, ELITE),
 }
 
-local CLASS_ICONS = setmetatable({}, {__index = function(t, k)
-    local coords = CLASS_ICON_TCOORDS[k]
-    t[k] = format([[|TInterface\WorldStateFrame\ICONS-CLASSES:%%d:%%d:0:0:256:256:%d:%d:%d:%d|t %%s]], coords[1] * 0xFF, coords[2] * 0xFF,coords[3] * 0xFF, coords[4] * 0xFF)
-    return t[k]
-end})
+local CLASS_ICONS = setmetatable({}, {
+    __index = function(t, k)
+        local coords = CLASS_ICON_TCOORDS[k]
+        t[k] = format([[|TInterface\WorldStateFrame\ICONS-CLASSES:%%d:%%d:0:0:256:256:%d:%d:%d:%d|t %%s]],
+                      coords[1] * 0xFF, coords[2] * 0xFF, coords[3] * 0xFF, coords[4] * 0xFF)
+        return t[k]
+    end,
+})
 
-local tipleft = setmetatable({}, {__index = function(o, k)
-    local text = _G['GameTooltipTextLeft' .. k]
-    o[k] = text
-    return text
-end})
+local tipleft = setmetatable({}, {
+    __index = function(o, k)
+        local text = _G['GameTooltipTextLeft' .. k]
+        o[k] = text
+        return text
+    end,
+})
 
 ---- Custom APIS
 
@@ -155,7 +159,7 @@ function Addon:UpdateGuildLine()
         self:SetLine(self.lineGuild, tmp, 1, 1, 1)
     elseif realm then
         for i = self:GetEmptyLine(), 3, -1 do
-            self:SetLine(i, self:GetLine(i-1))
+            self:SetLine(i, self:GetLine(i - 1))
         end
         self:SetLine(2, realm, 1, 1, 1)
         self.lineLevel = self.lineLevel + 1
@@ -228,7 +232,8 @@ function Addon:UpdateIcon()
         return
     end
 
-    if not self.db.profile.showFacIcon or not self.unitFac or not (self.unitFac == 'Alliance' or self.unitFac == 'Horde') then
+    if not self.db.profile.showFacIcon or not self.unitFac or
+        not (self.unitFac == 'Alliance' or self.unitFac == 'Horde') then
         return
     end
     if not self.isPlayer and not self.db.profile.showNpcFacIcon then
@@ -316,51 +321,33 @@ function Addon:GetTargetText()
 end
 
 function Addon:SetUnit(unit)
-    self.linePVP,
-    self.lineFac,
-    self.lineBar,
-    self.lineTarget,
-    self.lineGuild,
-    self.lineLevel,
-
-    self.unit,
-    self.isDead,
-    self.isPlayer,
-    self.isBattlePet,
-    self.unitGuild,
-    self.unitFac,
-    self.unitLevel,
-    self.unitClass,
-    self.unitRace,
-    self.unitType,
-    self.unitName,
-    self.unitRealm,
-    self.unitClassification = nil
+    self.linePVP, self.lineFac, self.lineBar, self.lineTarget, self.lineGuild, self.lineLevel, self.unit, self.isDead, self.isPlayer, self.isBattlePet, self.unitGuild, self.unitFac, self.unitLevel, self.unitClass, self.unitRace, self.unitType, self.unitName, self.unitRealm, self.unitClassification =
+        nil
 
     local facLocale, classKey
-    self.unit                          = unit
-    self.isPlayer                      = UnitIsPlayer(unit)
-    self.isDead                        = UnitIsDeadOrGhost(unit)
-    self.isBattlePet                   = not self.isPlayer and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit))
+    self.unit = unit
+    self.isPlayer = UnitIsPlayer(unit)
+    self.isDead = UnitIsDeadOrGhost(unit)
+    self.isBattlePet = not self.isPlayer and (UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit))
     self.unitGuild, self.unitGuildRank = GetGuildInfo(unit)
-    self.unitFac, facLocale            = UnitFactionGroup(unit)
-    self.unitName, self.unitRealm      = UnitName(unit)
-    self.unitColor                     = UnitColor(unit)
+    self.unitFac, facLocale = UnitFactionGroup(unit)
+    self.unitName, self.unitRealm = UnitName(unit)
+    self.unitColor = UnitColor(unit)
 
     if self.unitRealm == '' or self.unitRealm == ' ' then
         self.unitRealm = nil
     end
 
     if self.isPlayer then
-        self.unitLevel           = UnitLevel(unit)
+        self.unitLevel = UnitLevel(unit)
         self.unitClass, classKey = UnitClass(unit)
-        self.unitRace            = UnitRace(unit)
+        self.unitRace = UnitRace(unit)
     elseif self.isBattlePet then
         self.unitLevel = UnitBattlePetLevel(unit)
-        self.unitType  = _G['BATTLE_PET_DAMAGE_NAME_' .. UnitBattlePetType(unit)]
+        self.unitType = _G['BATTLE_PET_DAMAGE_NAME_' .. UnitBattlePetType(unit)]
     else
-        self.unitLevel          = UnitLevel(unit)
-        self.unitType           = UnitPlayerControlled(unit) and UnitCreatureFamily(unit) or UnitCreatureType(unit)
+        self.unitLevel = UnitLevel(unit)
+        self.unitType = UnitPlayerControlled(unit) and UnitCreatureFamily(unit) or UnitCreatureType(unit)
         self.unitClassification = CLASSIFICATION[UnitClassification(unit)]
     end
 
@@ -425,18 +412,17 @@ function Addon:SetUnit(unit)
     end
 end
 
-
 ---- Anchor
 
-local noparents = setmetatable({
-    [UIParent] = false,
-    [WorldFrame] = false,
-}, {__index = function(_, k)
-    return k
-end})
+local noparents = setmetatable({[UIParent] = false, [WorldFrame] = false}, {
+    __index = function(_, k)
+        return k
+    end,
+})
 
 local function GameTooltip_SetDefaultAnchor(self, parent)
-    local frame = noparents[parent]-- or GetMouseFocus()]
+    local frame = noparents[parent]
+    -- or GetMouseFocus()]
     if not frame or frame == WorldFrame then
         self:SetOwner(UIParent, 'ANCHOR_CURSOR')
     else
@@ -462,31 +448,28 @@ end
 function Addon:OnInitialize()
     local defaults = {
         profile = {
-            showPVPName   = false,
+            showPVPName = false,
             showGuildRank = false,
-
-            showTarget    = true,
+            showTarget = true,
             showClassIcon = true,
             classIconSize = 22,
-
-            showExtraIcon    = true,
-            showRaidIcon     = true,
-            showPetIcon      = false,
-            showFacIcon      = true,
-            showNpcFacIcon   = false,
-            extraIconSize    = 48,
+            showExtraIcon = true,
+            showRaidIcon = true,
+            showPetIcon = false,
+            showFacIcon = true,
+            showNpcFacIcon = false,
+            extraIconSize = 48,
             extraIconOffsetX = 0,
             extraIconOffsetY = -5,
-
             colors = {
-                guild      = { r = 1.00, g = 0.00, b = 1.00 },
-                sameGuild  = { r = 1.00, g = 0.31, b = 0.38 },
-                server     = { r = 0.67, g = 1.00, b = 1.00 },
-                sameServer = { r = 0.34, g = 0.35, b = 1.00 },
-                friend     = { r = 0.00, g = 1.00, b = 0.20 },
-                enemy      = { r = 1.00, g = 0.20, b = 0.00 },
+                guild = {r = 1.00, g = 0.00, b = 1.00},
+                sameGuild = {r = 1.00, g = 0.31, b = 0.38},
+                server = {r = 0.67, g = 1.00, b = 1.00},
+                sameServer = {r = 0.34, g = 0.35, b = 1.00},
+                friend = {r = 0.00, g = 1.00, b = 0.20},
+                enemy = {r = 1.00, g = 0.20, b = 0.00},
             },
-        }
+        },
     }
 
     self.realms = {}
@@ -520,6 +503,11 @@ function Addon:OnEnable()
     self:HookScript(GameTooltip, 'OnSizeChanged', 'Tooltip_OnSizeChanged')
     self:HookScript(GameTooltip, 'OnTooltipCleared', 'Tooltip_OnHide')
 
+    self:SecureHook(GameTooltip, 'SetBagItem', function(tip, bag, slot)
+        local _, num = GetContainerItemInfo(bag, slot)
+        self:GameTooltipAddPrice(tip, num)
+    end)
+
     self:HookScript(GameTooltipStatusBar, 'OnShow', 'StatusBar_OnShow')
     self:HookScript(GameTooltipStatusBar, 'OnValueChanged', 'StatusBar_OnValueChanged')
 
@@ -551,5 +539,25 @@ function Addon:GetRaceColor()
 end
 
 function Addon:GetServerColor()
-    return (not self.unitRealm or self.realms[self.unitRealm]) and self.db.profile.colors.sameServer or self.db.profile.colors.server
+    return (not self.unitRealm or self.realms[self.unitRealm]) and self.db.profile.colors.sameServer or
+               self.db.profile.colors.server
+end
+
+function Addon:GameTooltipAddPrice(tip, count)
+    if MerchantFrame:IsVisible() then
+        return
+    end
+    local _, item = tip:GetItem()
+    local price = select(11, GetItemInfo(item))
+
+    if price and price > 0 then
+        count = count or 1
+
+        if count == 1 then
+            SetTooltipMoney(tip, price * count, nil, string.format('%s:', SELL_PRICE))
+        else
+            SetTooltipMoney(tip, price * count, nil, string.format('%s|cff00ffffx%d|r:', SELL_PRICE, count))
+        end
+        tip:Show()
+    end
 end
