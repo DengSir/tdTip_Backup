@@ -18,7 +18,8 @@ local FACTION_BAR_COLORS   = FACTION_BAR_COLORS
 local HIGHLIGHT_FONT_COLOR = HIGHLIGHT_FONT_COLOR
 
 ---- WOW APIS
-
+local UnitIsWildBattlePet = UnitIsWildBattlePet or nop
+local UnitIsBattlePetCompanion = UnitIsBattlePetCompanion or nop
 
 ---- DEFINE
 
@@ -33,13 +34,11 @@ local CLASSIFICATION     = {
     rareelite = format('|cffffaaff%s%s|r', L.Rare, ELITE),
 }
 
-local CLASS_ICONS = {} do
-    for i = 1, GetNumClasses() do
-        local _, classKey = GetClassInfo(i)
-        local coords = CLASS_ICON_TCOORDS[classKey]
-        CLASS_ICONS[classKey] = format([[|TInterface\WorldStateFrame\ICONS-CLASSES:%%d:%%d:0:0:256:256:%d:%d:%d:%d|t %%s]], coords[1] * 0xFF, coords[2] * 0xFF,coords[3] * 0xFF, coords[4] * 0xFF)
-    end
-end
+local CLASS_ICONS = setmetatable({}, {__index = function(t, k)
+    local coords = CLASS_ICON_TCOORDS[k]
+    t[k] = format([[|TInterface\WorldStateFrame\ICONS-CLASSES:%%d:%%d:0:0:256:256:%d:%d:%d:%d|t %%s]], coords[1] * 0xFF, coords[2] * 0xFF,coords[3] * 0xFF, coords[4] * 0xFF)
+    return t[k]
+end})
 
 local tipleft = setmetatable({}, {__index = function(o, k)
     local text = _G['GameTooltipTextLeft' .. k]
