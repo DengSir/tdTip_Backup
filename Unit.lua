@@ -154,7 +154,16 @@ function Unit:UpdateNameLine()
 end
 
 function Unit:UpdateGuildLine()
+    local guild = self.unitGuild
     local realm = self.unitRealm
+
+    if (guild or realm) and not self.lineGuild then
+        for i = self:GetEmptyLine(), 3, -1 do
+            self:SetLine(i, self:GetLine(i - 1))
+        end
+        self.lineGuild = 2
+        self.lineLevel = self.lineLevel + 1
+    end
     if self.lineGuild then
         local tmp = self.unitGuild
         if realm then
