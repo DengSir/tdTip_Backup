@@ -41,3 +41,9 @@ L['Faction Border Color'] = true
 L['Neutral']              = true
 
 L['Profiles'] = true
+
+L['Item id']    = true
+L['Item level'] = true
+L['Item class'] = true
+L['Item icon']  = true
+L['Item spell'] = true

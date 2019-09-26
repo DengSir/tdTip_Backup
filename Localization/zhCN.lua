@@ -42,3 +42,9 @@ L['Neutral']              = '中立'
 
 L['Profiles']      = '配置'
 L['tdTip Options'] = '太多鼠标提示设置'
+
+L['Item id']    = '物品ID'
+L['Item level'] = '物品等级'
+L['Item class'] = '物品类型'
+L['Item icon']  = '物品图标'
+L['Item spell'] = '物品技能'
